@@ -25,7 +25,13 @@ It combines browser MediaPipe hand tracking, canvas-driven effects, and a lightw
 
 ---
 
-## 🚀 Highlights
+## � Live demo
+
+[Open AuraMesh AR on Render](https://auramesh-gateway.onrender.com/)
+
+---
+
+## �🚀 Highlights
 
 - **Gesture-driven AR** with MediaPipe hand tracking and pinch detection
 - **Realtime event bus** through gateway WebSocket fan-out
