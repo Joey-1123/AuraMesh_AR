@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraMesh AR</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https: wss: ws:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="startOverlay">
+    <h1 class="title">AuraMesh AR</h1>
+    <p class="subtitle">Grant camera permission and start the real-time experience</p>
+    <button class="start-btn" id="startBtn">Enter Experience</button>
+    <p class="error" id="startError"></p>
+  </div>
+
+  <div class="video-container">
+    <video class="input_video" autoplay playsinline></video>
+    <canvas id="bgCanvas"></canvas>
+    <canvas id="mainCanvas"></canvas>
+  </div>
+
+  <div id="hud" class="hidden">
+    <div class="panel">
+      <div class="stat">Hands Detected: <span class="val" id="ui-hands">0</span></div>
+      <div class="stat">FPS: <span class="val" id="ui-fps">0</span></div>
+      <div class="stat">Mode: <span class="val" id="ui-mode">High</span></div>
+    </div>
+    <div class="panel">
+      <div class="stat">Gesture: <span class="val" id="ui-gesture">None</span></div>
+      <div class="stat">Spread: <span class="val" id="ui-spread">0%</span></div>
+      <div class="stat">Pipeline: <span class="val" id="ui-pipeline">0/0</span></div>
+      <div class="stat">Session: <span class="val" id="ui-session">n/a</span></div>
+    </div>
+  </div>
+
+  <div id="themes" class="hidden">
+    <button class="theme-btn active" data-theme="Rainbow">Rainbow</button>
+    <button class="theme-btn" data-theme="Cyberpunk">Cyberpunk</button>
+    <button class="theme-btn" data-theme="Lava">Lava</button>
+    <button class="theme-btn" data-theme="Ocean">Ocean</button>
+    <button class="theme-btn" data-theme="Galaxy">Galaxy</button>
+  </div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
+
+

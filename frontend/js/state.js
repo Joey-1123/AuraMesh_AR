@@ -1,0 +1,32 @@
+﻿export function createState() {
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    time: 0,
+    lastTime: performance.now(),
+    framesThisSecond: 0,
+    lastFpsTime: performance.now(),
+    currentHands: [],
+    handVelocities: 0,
+    currentTheme: "Rainbow",
+    particles: [],
+    ripples: [],
+    matrixColumns: [],
+    fontSize: 16,
+    maxColumns: 0,
+    lastPinchState: [false, false],
+    rafId: null,
+    sessionId: null,
+    powerMode: "High",
+    sentMetricsAt: 0,
+    mpSent: 0,
+    mpResults: 0,
+    mpLastError: "",
+    noHandFrames: 0,
+    mpMinIntervalMs: 28,
+    lastGestureType: "",
+    lastGestureAt: 0
+  };
+}
+
+

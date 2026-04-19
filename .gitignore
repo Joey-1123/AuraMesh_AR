@@ -1,0 +1,30 @@
+# Node dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment files
+.env
+
+# Build / output folders
+dist/
+build/
+coverage/
+
+# Editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# Local documentation / working notes
+EDITS_AND_RENDER_GUIDE.md
+EDITS_LOG.md
+
+# Lock files (optional, if you don't want lockfiles tracked)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
