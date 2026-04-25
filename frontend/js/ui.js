@@ -9,6 +9,8 @@
     uiFps: document.getElementById("ui-fps"),
     uiGesture: document.getElementById("ui-gesture"),
     uiSpread: document.getElementById("ui-spread"),
+    uiSign: document.getElementById("ui-sign"),
+    uiTranscript: document.getElementById("ui-transcript"),
     uiSession: document.getElementById("ui-session"),
     uiMode: document.getElementById("ui-mode"),
     uiPipeline: document.getElementById("ui-pipeline")

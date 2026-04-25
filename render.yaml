@@ -1,99 +1,9 @@
-﻿services:
+services:
   - type: web
-    name: auramesh-gateway
+    name: auramesh-django
     runtime: docker
     plan: free
-    dockerfilePath: services/gateway/Dockerfile
-    dockerContext: .
-    healthCheckPath: /health
-    envVars:
-      - key: SESSION_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-session
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: GESTURE_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-gesture
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: EFFECTS_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-effects
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: ANALYTICS_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-analytics
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: PROFILE_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-profile
-          envVarKey: RENDER_EXTERNAL_URL
-      - fromGroup: auramesh-secrets
-
-  - type: web
-    name: auramesh-session
-    runtime: docker
-    plan: free
-    dockerfilePath: services/session-service/Dockerfile
-    dockerContext: .
-    healthCheckPath: /health
-    envVars:
-      - fromGroup: auramesh-secrets
-
-  - type: web
-    name: auramesh-gesture
-    runtime: docker
-    plan: free
-    dockerfilePath: services/gesture-service/Dockerfile
-    dockerContext: .
-    healthCheckPath: /health
-    envVars:
-      - key: EFFECTS_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-effects
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: ANALYTICS_SERVICE_URL
-        fromService:
-          type: web
-          name: auramesh-analytics
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: GATEWAY_BASE_URL
-        fromService:
-          type: web
-          name: auramesh-gateway
-          envVarKey: RENDER_EXTERNAL_URL
-      - fromGroup: auramesh-secrets
-
-  - type: web
-    name: auramesh-effects
-    runtime: docker
-    plan: free
-    dockerfilePath: services/effects-service/Dockerfile
-    dockerContext: .
-    healthCheckPath: /health
-    envVars:
-      - fromGroup: auramesh-secrets
-
-  - type: web
-    name: auramesh-analytics
-    runtime: docker
-    plan: free
-    dockerfilePath: services/analytics-service/Dockerfile
-    dockerContext: .
-    healthCheckPath: /health
-    envVars:
-      - fromGroup: auramesh-secrets
-
-  - type: web
-    name: auramesh-profile
-    runtime: docker
-    plan: free
-    dockerfilePath: services/profile-service/Dockerfile
+    dockerfilePath: backend/Dockerfile
     dockerContext: .
     healthCheckPath: /health
     envVars:
@@ -102,9 +12,12 @@
 envVarGroups:
   - name: auramesh-secrets
     envVars:
-      - key: INTERNAL_EVENT_TOKEN
+      - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: SESSION_TOKEN_SECRET
         generateValue: true
-
+      - key: INTERNAL_EVENT_TOKEN
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
 

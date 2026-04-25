@@ -26,6 +26,10 @@ export async function postGesture(payload) {
   return call("/v1/events/gesture", { method: "POST", body: JSON.stringify(payload) });
 }
 
+export async function postSign(payload) {
+  return call("/v1/events/sign", { method: "POST", body: JSON.stringify(payload) });
+}
+
 export async function postMetrics(payload) {
   return call("/v1/analytics/metrics", { method: "POST", body: JSON.stringify(payload) });
 }

@@ -1,90 +1,50 @@
-﻿# AuraMesh AR
+# AuraMesh AR
 
-[![Side Project](https://img.shields.io/badge/side%20project-neon-purple?style=plastic)](https://github.com)
-[![AR](https://img.shields.io/badge/AR-hands%20on-cyan?style=plastic)](https://github.com)
-[![Microservices](https://img.shields.io/badge/microservices-lightning-blue?style=plastic)](https://github.com)
-[![Realtime](https://img.shields.io/badge/realtime-WS%20stream-green?style=plastic)](https://github.com)
+Gesture-driven AR frontend with a Django REST backend and websocket event stream.
 
-<p align="center">
-  <img src="./assets/created-to-inspire.png" alt="Created to inspire" width="900" />
-</p>
+## Stack
 
-> Neon-infused AR playground with gesture-driven visuals, canvas rendering, and a backend service mesh.
+- Frontend: vanilla HTML, CSS, JavaScript
+- Backend: Django REST Framework + Channels
+- Runtime: one ASGI service on Render or Docker
 
----
+## Run locally
 
-## ✨ Snapshot
+```bash
+docker compose up --build
+```
 
-**AuraMesh AR** is a side-project rewrite of a single-file AR demo into a modular, structured experience.
-It combines browser MediaPipe hand tracking, canvas-driven effects, and a lightweight Node.js service mesh.
+Open:
 
-**What it does:**
-- modular frontend split into rendering, gesture logic, audio, UI, effects, and state
-- gateway-backed microservices for session, gesture, effects, analytics, and profiles
-- realtime WebSocket event stream for instant AR feedback
+- `http://localhost:8080/`
 
----
+## Render
 
-## � Live demo
+This repo is configured for one Render web service:
 
-[Open AuraMesh AR on Render](https://auramesh-gateway.onrender.com/)
+- `auramesh-django`
 
----
+Use [render.yaml](./render.yaml) at the repo root.
 
-## �🚀 Highlights
+## API
 
-- **Gesture-driven AR** with MediaPipe hand tracking and pinch detection
-- **Realtime event bus** through gateway WebSocket fan-out
-- **Adaptive render mode** for lower-power devices and smoother runtime
-- **Safer media startup** with camera/audio error handling and cleanup
-- **Clean service boundaries** across frontend and backend responsibilities
-- **Analytics-aware** event tracing and metrics capture
-- **Visual effects pipeline** for theme resolution, particles, and overlays
+- `POST /v1/sessions`
+- `POST /v1/events/gesture`
+- `POST /v1/events/sign`
+- `POST /v1/analytics/metrics`
+- `GET /v1/analytics/session/<session_id>`
+- `GET /v1/themes`
+- `GET /v1/effects/resolve`
+- `POST /v1/profiles/<user_id>/theme`
+- `GET /v1/profiles/<user_id>`
+- `GET /health`
 
----
+Sign language support:
 
-## 🧩 Architecture
+- live static-sign classification from webcam hand landmarks
+- sign transcript in the HUD
+- sign events recorded in session analytics
 
-| Layer | Purpose | Notes |
-| --- | --- | --- |
-| `gateway` | API router + WS broker | public frontend entrypoint, event fan-out |
-| `session-service` | session lifecycle | keeps session state isolated |
-| `gesture-service` | gesture ingest | validates and forwards gesture events |
-| `effects-service` | theme resolver | decides AR effect behavior |
-| `analytics-service` | telemetry | captures structured event metrics |
-| `profile-service` | personalization | user theme preferences |
+## WebSocket
 
----
-
-## 🎨 Frontend stack
-
-- `frontend/index.html`, `css/styles.css`
-- modular JS in `frontend/js/`
-- MediaPipe integration in `mediapipe.js`
-- canvas renderer in `renderer.js`
-- dedicated audio, UI, effects, gesture, and API layers
-
----
-
-## 🛠 Tech stack
-
-- **Browser**: vanilla HTML/CSS/JavaScript
-- **AR**: MediaPipe Hands + live webcam gestures
-- **Backend**: Node.js microservices, REST endpoints
-- **Realtime**: WebSocket gateway push stream
-- **Containers**: Docker-friendly service layout
-
----
-
-## 📁 Project layout
-
-- `frontend/`: AR UI, runtime, MediaPipe glue
-- `services/`: gateway + backend microservices
-- `shared/`: shared helpers and transport utilities
-
----
-
-### Why this feels cool
-
-A playful AR experiment with clean architecture: gesture-led visuals, realtime data flow, and service-oriented wiring.
-
+- `/ws`

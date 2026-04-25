@@ -25,7 +25,15 @@
     noHandFrames: 0,
     mpMinIntervalMs: 28,
     lastGestureType: "",
-    lastGestureAt: 0
+    lastGestureAt: 0,
+    signHistory: [],
+    currentSign: "",
+    signConfidence: 0,
+    signStableCount: 0,
+    signLastSentAt: 0,
+    signLastLabel: "",
+    signTranscript: [],
+    signMinConfidence: 0.78
   };
 }
 

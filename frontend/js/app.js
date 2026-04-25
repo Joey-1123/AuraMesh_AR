@@ -4,8 +4,9 @@ import { uiRefs, showRunning, showStartError, bindThemes } from "./ui.js";
 import { createAudioEngine } from "./audio.js";
 import { resizeCanvases, renderFrame } from "./renderer.js";
 import { detectAndHandleGestures } from "./gestures.js";
+import { classifySign, transcriptToText } from "./sign-language.js";
 import { createMediaPipe } from "./mediapipe.js";
-import { createSession, postGesture, postMetrics, setThemePreference, connectEvents, setSessionToken, checkBackendHealth } from "./api.js";
+import { createSession, postGesture, postSign, postMetrics, setThemePreference, connectEvents, setSessionToken, checkBackendHealth } from "./api.js";
 
 const OFFLINE_ONLY = new URLSearchParams(window.location.search).get("offline") === "1";
 const state = createState();
@@ -30,6 +31,8 @@ let lastGestureSentAt = 0;
 let metricsInFlight = false;
 let recoveryTimer = null;
 let lowFpsStreak = 0;
+let signInFlight = false;
+let lastSignSentAt = 0;
 
 function onApiFailure() {
   apiFailureCount += 1;
@@ -58,6 +61,27 @@ function sendGesture(payload) {
     .catch(onApiFailure)
     .finally(() => {
       gestureInFlight = false;
+    });
+}
+
+function sendSign(payload) {
+  if (!backendEnabled || !state.sessionId) return;
+  const now = performance.now();
+  if (signInFlight || now - lastSignSentAt < 900) return;
+  signInFlight = true;
+  lastSignSentAt = now;
+  postSign({
+    sessionId: state.sessionId,
+    userId,
+    theme: state.currentTheme,
+    ...payload
+  })
+    .then(() => {
+      apiFailureCount = 0;
+    })
+    .catch(onApiFailure)
+    .finally(() => {
+      signInFlight = false;
     });
 }
 
@@ -101,7 +125,8 @@ function tick(timestamp) {
         userId,
         fps: state.framesThisSecond,
         mode: state.powerMode,
-        hands: state.currentHands.length
+        hands: state.currentHands.length,
+        signsDetected: state.signHistory.length
       })
         .then(() => {
           apiFailureCount = 0;
@@ -118,6 +143,42 @@ function tick(timestamp) {
 
   renderFrame(state, bgCtx, ctx);
   detectAndHandleGestures(state, ui, audio, sendGesture, THEMES);
+  if (state.currentHands.length > 0) {
+    const sign = classifySign(state.currentHands[0]);
+    if (sign.label && sign.confidence >= state.signMinConfidence) {
+      state.signStableCount = sign.label === state.signLastLabel ? state.signStableCount + 1 : 1;
+      state.currentSign = sign.label;
+      state.signConfidence = sign.confidence;
+      ui.uiSign.innerText = `${sign.label} ${(sign.confidence * 100).toFixed(0)}%`;
+      if (state.signStableCount >= 3) {
+        const isNew = state.signHistory.at(-1) !== sign.label;
+        const stale = performance.now() - state.signLastSentAt > 1200;
+        if (isNew || stale) {
+          state.signHistory.push(sign.label);
+          state.signTranscript = state.signHistory.slice(-12);
+          ui.uiTranscript.innerText = transcriptToText(state.signTranscript);
+          sendSign({
+            label: sign.label,
+            confidence: Number(sign.confidence.toFixed(2)),
+            hand: "primary",
+            transcript: state.signTranscript,
+          });
+          state.signLastSentAt = performance.now();
+        }
+      }
+      state.signLastLabel = sign.label;
+    } else {
+      state.signStableCount = 0;
+      state.currentSign = "";
+      state.signConfidence = 0;
+      ui.uiSign.innerText = "-";
+    }
+  } else {
+    state.signStableCount = 0;
+    state.currentSign = "";
+    state.signConfidence = 0;
+    ui.uiSign.innerText = "-";
+  }
 }
 
 async function boot() {
@@ -155,6 +216,13 @@ async function boot() {
           if (evt?.type === "effects.applied" && evt.payload?.sessionId === state.sessionId) {
             ui.uiGesture.textContent = evt.payload.gesture || ui.uiGesture.textContent;
           }
+          if (evt?.type === "sign.recognized" && evt.payload?.sessionId === state.sessionId) {
+            ui.uiSign.textContent = `${evt.payload.label} ${(evt.payload.confidence * 100).toFixed(0)}%`;
+            if (Array.isArray(evt.payload.transcript)) {
+              state.signTranscript = evt.payload.transcript;
+              ui.uiTranscript.textContent = transcriptToText(state.signTranscript);
+            }
+          }
         });
         apiFailureCount = 0;
       })
@@ -179,6 +247,13 @@ async function boot() {
         ws = connectEvents((evt) => {
           if (evt?.type === "effects.applied" && evt.payload?.sessionId === state.sessionId) {
             ui.uiGesture.textContent = evt.payload.gesture || ui.uiGesture.textContent;
+          }
+          if (evt?.type === "sign.recognized" && evt.payload?.sessionId === state.sessionId) {
+            ui.uiSign.textContent = `${evt.payload.label} ${(evt.payload.confidence * 100).toFixed(0)}%`;
+            if (Array.isArray(evt.payload.transcript)) {
+              state.signTranscript = evt.payload.transcript;
+              ui.uiTranscript.textContent = transcriptToText(state.signTranscript);
+            }
           }
         });
       } catch (_e) {

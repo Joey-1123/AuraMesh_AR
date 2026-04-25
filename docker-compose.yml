@@ -1,69 +1,12 @@
-﻿version: "3.9"
-
 services:
-  gateway:
+  backend:
     build:
       context: .
-      dockerfile: services/gateway/Dockerfile
+      dockerfile: backend/Dockerfile
     ports:
       - "8080:8080"
     environment:
-      - PORT=8080
-      - SESSION_SERVICE_URL=http://session-service:8081
-      - GESTURE_SERVICE_URL=http://gesture-service:8082
-      - EFFECTS_SERVICE_URL=http://effects-service:8083
-      - ANALYTICS_SERVICE_URL=http://analytics-service:8084
-      - PROFILE_SERVICE_URL=http://profile-service:8085
+      - DJANGO_SECRET_KEY=dev-secret-key
+      - SESSION_TOKEN_SECRET=session-dev-secret
       - INTERNAL_EVENT_TOKEN=internal-dev-token
-      - SESSION_TOKEN_SECRET=session-dev-secret
-    depends_on:
-      - session-service
-      - gesture-service
-      - effects-service
-      - analytics-service
-      - profile-service
-
-  session-service:
-    build:
-      context: .
-      dockerfile: services/session-service/Dockerfile
-    environment:
-      - PORT=8081
-      - SESSION_TOKEN_SECRET=session-dev-secret
-
-  gesture-service:
-    build:
-      context: .
-      dockerfile: services/gesture-service/Dockerfile
-    environment:
-      - PORT=8082
-      - EFFECTS_SERVICE_URL=http://effects-service:8083
-      - ANALYTICS_SERVICE_URL=http://analytics-service:8084
-      - GATEWAY_EVENTS_URL=http://gateway:8080/internal/events
-      - INTERNAL_EVENT_TOKEN=internal-dev-token
-      - SESSION_TOKEN_SECRET=session-dev-secret
-
-  effects-service:
-    build:
-      context: .
-      dockerfile: services/effects-service/Dockerfile
-    environment:
-      - PORT=8083
-      - SESSION_TOKEN_SECRET=session-dev-secret
-
-  analytics-service:
-    build:
-      context: .
-      dockerfile: services/analytics-service/Dockerfile
-    environment:
-      - PORT=8084
-      - SESSION_TOKEN_SECRET=session-dev-secret
-
-  profile-service:
-    build:
-      context: .
-      dockerfile: services/profile-service/Dockerfile
-    environment:
-      - PORT=8085
-      - SESSION_TOKEN_SECRET=session-dev-secret
-
+      - DJANGO_DEBUG=1

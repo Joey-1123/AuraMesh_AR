@@ -15,7 +15,9 @@
 
 body {
   font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background-color: var(--bg-color);
+  background:
+    linear-gradient(180deg, rgba(5, 5, 16, 0.2), rgba(5, 5, 16, 0.55)),
+    var(--bg-color);
   color: var(--text-color);
   overflow: hidden;
 }
@@ -48,49 +50,69 @@ body {
 
 #hud {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 16px;
+  left: 16px;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
   pointer-events: none;
 }
 
 .panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 15px 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  background: rgba(12, 16, 28, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 .stat {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: 12px;
   justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-  min-width: 220px;
+  margin-bottom: 7px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.82);
+  min-width: 0;
+  line-height: 1.25;
 }
 
 .stat:last-child { margin-bottom: 0; }
-.val { font-weight: 700; color: var(--accent); }
+.val { font-weight: 700; color: var(--accent); text-align: right; }
+
+.transcript-stat {
+  display: block;
+}
+
+.transcript-stat .val {
+  display: block;
+  margin-top: 6px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
 
 #themes {
   position: absolute;
-  bottom: 20px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
   gap: 10px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 30px;
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
+  background: rgba(12, 16, 28, 0.68);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
   padding: 8px;
   transition: opacity 0.4s;
 }
@@ -99,15 +121,16 @@ body {
   background: transparent;
   border: 1px solid transparent;
   color: #fff;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 8px 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: 0.2s ease;
+  white-space: nowrap;
 }
 
 .theme-btn.active {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 #startOverlay {
@@ -148,9 +171,9 @@ body {
 }
 
 @media (max-width: 768px) {
-  #hud { top: 12px; left: 12px; }
-  .stat { min-width: 170px; font-size: 0.8rem; }
-  #themes { bottom: 12px; gap: 6px; padding: 6px; }
-  .theme-btn { padding: 6px 10px; font-size: 0.82rem; }
+  #hud { top: 12px; left: 12px; width: calc(100vw - 24px); }
+  .stat { font-size: 0.78rem; }
+  .transcript-stat .val { font-size: 0.8rem; }
+  #themes { bottom: 12px; gap: 6px; padding: 6px; border-radius: 10px; }
+  .theme-btn { padding: 6px 9px; font-size: 0.8rem; }
 }
-
